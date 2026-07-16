@@ -8,13 +8,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body,
-#root {
+html, body, #root {
   margin: 0;
   min-height: 100%;
 }
@@ -27,6 +23,7 @@ body {
     linear-gradient(180deg, #050816 0%, #070b1c 48%, #04060f 100%);
 }
 
+/* ─── Layout ──────────────────────────────────── */
 .page-shell {
   position: relative;
   min-height: 100vh;
@@ -55,10 +52,12 @@ body {
   border-radius: 32px;
   padding: 38px;
   backdrop-filter: blur(22px);
-  background: linear-gradient(180deg, rgba(8, 13, 30, 0.85), rgba(5, 9, 20, 0.78));
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, rgba(8,13,30,0.85), rgba(5,9,20,0.78));
+  box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+  /* IMPORTANT: no overflow:hidden here so children can layer correctly */
 }
 
+/* ─── Header ──────────────────────────────────── */
 .hero-header {
   max-width: 760px;
   margin: 0 auto 24px;
@@ -68,9 +67,9 @@ body {
 .eyebrow {
   display: inline-flex;
   padding: 8px 14px;
-  border: 1px solid rgba(116, 145, 255, 0.24);
+  border: 1px solid rgba(116,145,255,0.24);
   border-radius: 999px;
-  background: rgba(90, 116, 255, 0.08);
+  background: rgba(90,116,255,0.08);
   color: #9ec5ff;
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -79,7 +78,7 @@ body {
 
 .hero-header h1 {
   margin: 18px 0 14px;
-  font-size: clamp(2.2rem, 5vw, 5.2rem);
+  font-size: clamp(2rem, 4.5vw, 4.8rem);
   line-height: 0.95;
   letter-spacing: -0.05em;
 }
@@ -87,11 +86,12 @@ body {
 .hero-header p {
   margin: 0 auto;
   max-width: 700px;
-  color: rgba(222, 230, 255, 0.74);
+  color: rgba(222,230,255,0.74);
   font-size: 1.02rem;
   line-height: 1.7;
 }
 
+/* ─── Robot Stage ─────────────────────────────── */
 .robot-stage {
   display: grid;
   gap: 18px;
@@ -100,27 +100,49 @@ body {
 }
 
 .robot-frame {
-  position: relative;
+  position: relative;          /* anchor for absolute children */
   height: 520px;
   border-radius: 28px;
-  overflow: hidden;
-  border: 1px solid rgba(127, 148, 255, 0.14);
+  overflow: hidden;            /* clips Spline canvas to rounded frame */
+  border: 1px solid rgba(127,148,255,0.14);
   background:
-    radial-gradient(circle at 50% 0%, rgba(100, 120, 255, 0.12), transparent 35%),
-    linear-gradient(180deg, rgba(10, 17, 40, 0.95), rgba(5, 9, 20, 0.76));
+    radial-gradient(circle at 50% 0%, rgba(100,120,255,0.12), transparent 35%),
+    linear-gradient(180deg, rgba(10,17,40,0.95), rgba(5,9,20,0.76));
 }
 
-.robot-frame canvas {
+/* ─── Spline background layer ─────────────────── */
+.spline-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;                  /* behind overlay */
+  pointer-events: auto;        /* keep Spline interactive */
+}
+
+/* Spline mounts a div + canvas inside .spline-bg */
+.spline-bg > div,
+.spline-bg canvas {
   width: 100% !important;
   height: 100% !important;
-  opacity: 0.92;
+  display: block;
 }
 
+.spline-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(150,170,255,0.5);
+  font-family: monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+}
+
+/* ─── Eye overlay ─────────────────────────────── */
 .robot-overlay {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  z-index: 2;
+  z-index: 1;                  /* above Spline, below nothing */
+  pointer-events: none;        /* let mouse events pass to Spline */
 }
 
 .robot-face {
@@ -135,35 +157,30 @@ body {
   height: 18px;
   border-radius: 50%;
   background: #7ad7ff;
-  box-shadow: 0 0 20px rgba(122, 215, 255, 0.9), 0 0 42px rgba(122, 215, 255, 0.35);
+  box-shadow: 0 0 20px rgba(122,215,255,0.9), 0 0 42px rgba(122,215,255,0.35);
   transition: transform 120ms ease-out, background 220ms ease, box-shadow 220ms ease, height 240ms ease, border-radius 240ms ease;
 }
 
-.eye-left {
-  left: 47.1%;
-}
-
-.eye-right {
-  left: 52.1%;
-}
+.eye-left  { left: 47.1%; }
+.eye-right { left: 52.1%; }
 
 .eye.copying {
   background: #ff4fd8;
-  box-shadow: 0 0 20px rgba(255, 79, 216, 0.95), 0 0 42px rgba(255, 79, 216, 0.42);
+  box-shadow: 0 0 20px rgba(255,79,216,0.95), 0 0 42px rgba(255,79,216,0.42);
 }
 
 .robot-face.sleeping .eye {
   height: 4px;
   border-radius: 999px;
-  background: rgba(210, 234, 255, 0.72);
-  box-shadow: 0 0 16px rgba(210, 234, 255, 0.35);
+  background: rgba(210,234,255,0.72);
+  box-shadow: 0 0 16px rgba(210,234,255,0.35);
 }
 
 .zzz {
   position: absolute;
   top: 22%;
   right: 29%;
-  color: rgba(159, 201, 255, 0.84);
+  color: rgba(159,201,255,0.84);
   font-size: 1.4rem;
   letter-spacing: 0.2em;
   text-transform: lowercase;
@@ -171,24 +188,25 @@ body {
 }
 
 @keyframes floatZ {
-  0%, 100% { transform: translateY(0px); opacity: 0.55; }
-  50% { transform: translateY(-8px); opacity: 1; }
+  0%, 100% { transform: translateY(0px);  opacity: 0.55; }
+  50%       { transform: translateY(-8px); opacity: 1; }
 }
 
+/* ─── Personality panel ───────────────────────── */
 .personality-panel {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
   padding: 18px 22px;
-  border: 1px solid rgba(126, 145, 255, 0.12);
+  border: 1px solid rgba(126,145,255,0.12);
   border-radius: 20px;
-  background: rgba(9, 15, 32, 0.72);
+  background: rgba(9,15,32,0.72);
 }
 
 .personality-panel p {
   margin: 0;
-  color: rgba(228, 235, 255, 0.8);
+  color: rgba(228,235,255,0.8);
 }
 
 .status-pill {
@@ -207,24 +225,23 @@ body {
   height: 10px;
   border-radius: 50%;
   background: #6be675;
-  box-shadow: 0 0 12px rgba(107, 230, 117, 0.7);
+  box-shadow: 0 0 12px rgba(107,230,117,0.7);
 }
-
 .status-dot.copying {
   background: #ff4fd8;
-  box-shadow: 0 0 12px rgba(255, 79, 216, 0.8);
+  box-shadow: 0 0 12px rgba(255,79,216,0.8);
 }
-
 .status-dot.sleeping {
   background: #9db3d8;
-  box-shadow: 0 0 12px rgba(157, 179, 216, 0.5);
+  box-shadow: 0 0 12px rgba(157,179,216,0.5);
 }
 
+/* ─── Terminal ────────────────────────────────── */
 .terminal-panel {
   border-radius: 24px;
   overflow: hidden;
-  border: 1px solid rgba(113, 133, 255, 0.2);
-  background: rgba(3, 8, 21, 0.88);
+  border: 1px solid rgba(113,133,255,0.2);
+  background: rgba(3,8,21,0.88);
 }
 
 .terminal-topbar {
@@ -234,7 +251,6 @@ body {
   border-bottom: 1px solid rgba(255,255,255,0.06);
   background: rgba(255,255,255,0.03);
 }
-
 .terminal-topbar span {
   width: 10px;
   height: 10px;
@@ -247,74 +263,28 @@ body {
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   color: #b9ffcb;
 }
-
 .terminal-body p {
   margin: 0 0 10px;
   line-height: 1.6;
 }
+.prompt { color: #8fc2ff; }
 
-.prompt {
-  color: #8fc2ff;
-}
-
+/* ─── Responsive ──────────────────────────────── */
 @media (max-width: 900px) {
-  .hero-card {
-    padding: 24px;
-    border-radius: 24px;
-  }
-
-  .robot-frame {
-    height: 420px;
-  }
-
-  .personality-panel {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .eye-left {
-    left: 45.8%;
-  }
-
-  .eye-right {
-    left: 52.8%;
-  }
+  .hero-card { padding: 24px; border-radius: 24px; }
+  .robot-frame { height: 420px; }
+  .personality-panel { flex-direction: column; align-items: flex-start; }
+  .eye-left  { left: 45.8%; }
+  .eye-right { left: 52.8%; }
 }
 
 @media (max-width: 640px) {
-  .page-shell {
-    padding: 16px;
-  }
-
-  .hero-header h1 {
-    font-size: clamp(2rem, 12vw, 3.6rem);
-  }
-
-  .hero-header p,
-  .personality-panel p,
-  .terminal-body p {
-    font-size: 0.94rem;
-  }
-
-  .robot-frame {
-    height: 360px;
-  }
-
-  .eye {
-    top: 35%;
-    width: 14px;
-    height: 14px;
-  }
-
-  .eye-left {
-    left: 44.2%;
-  }
-
-  .eye-right {
-    left: 53.4%;
-  }
-
-  .zzz {
-    right: 18%;
-  }
+  .page-shell { padding: 16px; }
+  .hero-header h1 { font-size: clamp(1.8rem, 10vw, 3.2rem); }
+  .hero-header p, .personality-panel p, .terminal-body p { font-size: 0.94rem; }
+  .robot-frame { height: 360px; }
+  .eye { top: 35%; width: 14px; height: 14px; }
+  .eye-left  { left: 44.2%; }
+  .eye-right { left: 53.4%; }
+  .zzz { right: 18%; }
 }

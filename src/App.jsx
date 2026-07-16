@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, Suspense, Component } from 'react'
 import Spline from '@splinetool/react-spline'
 
 const STATUS = {
@@ -12,6 +12,38 @@ const sleepMessages = [
   'switching to low-power cognition mode...',
   'dreaming in neural vectors...',
 ]
+
+class SplineErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false }
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="spline-fallback">
+          <span>[ ROBOT OFFLINE ]</span>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
+function RobotScene() {
+  return (
+    <SplineErrorBoundary>
+      <Suspense fallback={<div className="spline-fallback"><span>Loading...</span></div>}>
+        <Spline
+          scene="https://my.spline.design/genkubgreetingrobot-Zw1LQErETOreJIi1M6WLp1n3/"
+        />
+      </Suspense>
+    </SplineErrorBoundary>
+  )
+}
 
 function App() {
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 })
@@ -33,7 +65,6 @@ function App() {
       setIsIdle(false)
       setStatus((current) => (current === STATUS.COPYING ? STATUS.COPYING : STATUS.ACTIVE))
       setTerminalLine('// status: building')
-
       if (idleTimer.current) clearTimeout(idleTimer.current)
       idleTimer.current = setTimeout(() => {
         setIsIdle(true)
@@ -42,20 +73,15 @@ function App() {
       }, 6000)
     }
 
-    const handleMouseMove = (event) => {
-      const x = event.clientX / window.innerWidth
-      const y = event.clientY / window.innerHeight
-      setMouse({ x, y })
+    const handleMouseMove = (e) => {
+      setMouse({ x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight })
       wakeUp()
     }
-
-    const handleInteraction = () => wakeUp()
 
     const handleCopy = () => {
       setCopiedFlash(true)
       setStatus(STATUS.COPYING)
       setTerminalLine('// copy event detected :: retina override enabled')
-
       if (copyTimer.current) clearTimeout(copyTimer.current)
       copyTimer.current = setTimeout(() => {
         setCopiedFlash(false)
@@ -65,18 +91,17 @@ function App() {
     }
 
     wakeUp()
-
     window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('keydown', handleInteraction)
-    window.addEventListener('scroll', handleInteraction)
-    window.addEventListener('click', handleInteraction)
+    window.addEventListener('keydown', wakeUp)
+    window.addEventListener('scroll', wakeUp)
+    window.addEventListener('click', wakeUp)
     document.addEventListener('copy', handleCopy)
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('keydown', handleInteraction)
-      window.removeEventListener('scroll', handleInteraction)
-      window.removeEventListener('click', handleInteraction)
+      window.removeEventListener('keydown', wakeUp)
+      window.removeEventListener('scroll', wakeUp)
+      window.removeEventListener('click', wakeUp)
       document.removeEventListener('copy', handleCopy)
       clearTimeout(idleTimer.current)
       clearTimeout(copyTimer.current)
@@ -91,9 +116,10 @@ function App() {
     <main className="page-shell">
       <div className="noise" />
       <section className="hero-card">
+
         <header className="hero-header">
           <span className="eyebrow">Coming Soon</span>
-          <h1>AUTONOMOUS SYSTEMS/AI INFRASTRUCTURE</h1>
+          <h1>AUTONOMOUS SYSTEMS<br />/AI INFRASTRUCTURE</h1>
           <p>
             High-performance portfolio interface currently assembling intelligent systems,
             automation layers and production-grade AI tooling.
@@ -101,7 +127,16 @@ function App() {
         </header>
 
         <div className="robot-stage">
+
+          {/* Robot frame — Spline lives here as absolute fill, overlay on top */}
           <div className={`robot-frame ${status.toLowerCase()}`}>
+
+            {/* Spline as background layer */}
+            <div className="spline-bg">
+              <RobotScene />
+            </div>
+
+            {/* Eye overlay on top of Spline */}
             <div className="robot-overlay">
               <div className={`robot-face ${status === STATUS.SLEEPING ? 'sleeping' : ''}`}>
                 <div className={`eye eye-left ${copiedFlash ? 'copying' : ''}`} style={eyeTransform} />
@@ -110,7 +145,6 @@ function App() {
               </div>
             </div>
 
-            <Spline scene="https://my.spline.design/genkubgreetingrobot-Zw1LQErETOreJIi1M6WLp1n3/" />
           </div>
 
           <div className="personality-panel">
@@ -126,9 +160,7 @@ function App() {
 
         <section className="terminal-panel" aria-label="Build terminal">
           <div className="terminal-topbar">
-            <span />
-            <span />
-            <span />
+            <span /><span /><span />
           </div>
           <div className="terminal-body">
             <p><span className="prompt">root@portfolio:~$</span> initialize --presence</p>
@@ -136,6 +168,7 @@ function App() {
             <p><span className="prompt">deploy@node-01:~$</span> next public release pending...</p>
           </div>
         </section>
+
       </section>
     </main>
   )
