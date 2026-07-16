@@ -1,2 +1,3 @@
-# portfolio-coming-soon
-Coming Soon page - Autonomous Systems / AI Infrastructure
+# Portfolio Coming Soon
+
+A modern React + Vite coming soon page with Spline robot interaction.

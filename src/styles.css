@@ -1,0 +1,320 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #f5f7ff;
+  background: #050816;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(75, 163, 255, 0.14), transparent 32%),
+    radial-gradient(circle at 80% 20%, rgba(127, 90, 240, 0.14), transparent 24%),
+    linear-gradient(180deg, #050816 0%, #070b1c 48%, #04060f 100%);
+}
+
+.page-shell {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  overflow: hidden;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(circle at center, black, transparent 85%);
+}
+
+.hero-card {
+  position: relative;
+  width: min(1200px, 100%);
+  border: 1px solid rgba(135, 162, 255, 0.22);
+  border-radius: 32px;
+  padding: 38px;
+  backdrop-filter: blur(22px);
+  background: linear-gradient(180deg, rgba(8, 13, 30, 0.85), rgba(5, 9, 20, 0.78));
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+}
+
+.hero-header {
+  max-width: 760px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  padding: 8px 14px;
+  border: 1px solid rgba(116, 145, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(90, 116, 255, 0.08);
+  color: #9ec5ff;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.hero-header h1 {
+  margin: 18px 0 14px;
+  font-size: clamp(2.2rem, 5vw, 5.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.hero-header p {
+  margin: 0 auto;
+  max-width: 700px;
+  color: rgba(222, 230, 255, 0.74);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.robot-stage {
+  display: grid;
+  gap: 18px;
+  align-items: end;
+  margin: 22px 0 26px;
+}
+
+.robot-frame {
+  position: relative;
+  height: 520px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(127, 148, 255, 0.14);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(100, 120, 255, 0.12), transparent 35%),
+    linear-gradient(180deg, rgba(10, 17, 40, 0.95), rgba(5, 9, 20, 0.76));
+}
+
+.robot-frame canvas {
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0.92;
+}
+
+.robot-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.robot-face {
+  position: absolute;
+  inset: 0;
+}
+
+.eye {
+  position: absolute;
+  top: 33%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #7ad7ff;
+  box-shadow: 0 0 20px rgba(122, 215, 255, 0.9), 0 0 42px rgba(122, 215, 255, 0.35);
+  transition: transform 120ms ease-out, background 220ms ease, box-shadow 220ms ease, height 240ms ease, border-radius 240ms ease;
+}
+
+.eye-left {
+  left: 47.1%;
+}
+
+.eye-right {
+  left: 52.1%;
+}
+
+.eye.copying {
+  background: #ff4fd8;
+  box-shadow: 0 0 20px rgba(255, 79, 216, 0.95), 0 0 42px rgba(255, 79, 216, 0.42);
+}
+
+.robot-face.sleeping .eye {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(210, 234, 255, 0.72);
+  box-shadow: 0 0 16px rgba(210, 234, 255, 0.35);
+}
+
+.zzz {
+  position: absolute;
+  top: 22%;
+  right: 29%;
+  color: rgba(159, 201, 255, 0.84);
+  font-size: 1.4rem;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  animation: floatZ 2.2s ease-in-out infinite;
+}
+
+@keyframes floatZ {
+  0%, 100% { transform: translateY(0px); opacity: 0.55; }
+  50% { transform: translateY(-8px); opacity: 1; }
+}
+
+.personality-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid rgba(126, 145, 255, 0.12);
+  border-radius: 20px;
+  background: rgba(9, 15, 32, 0.72);
+}
+
+.personality-panel p {
+  margin: 0;
+  color: rgba(228, 235, 255, 0.8);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6be675;
+  box-shadow: 0 0 12px rgba(107, 230, 117, 0.7);
+}
+
+.status-dot.copying {
+  background: #ff4fd8;
+  box-shadow: 0 0 12px rgba(255, 79, 216, 0.8);
+}
+
+.status-dot.sleeping {
+  background: #9db3d8;
+  box-shadow: 0 0 12px rgba(157, 179, 216, 0.5);
+}
+
+.terminal-panel {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(113, 133, 255, 0.2);
+  background: rgba(3, 8, 21, 0.88);
+}
+
+.terminal-topbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+}
+
+.terminal-topbar span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+}
+
+.terminal-body {
+  padding: 24px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  color: #b9ffcb;
+}
+
+.terminal-body p {
+  margin: 0 0 10px;
+  line-height: 1.6;
+}
+
+.prompt {
+  color: #8fc2ff;
+}
+
+@media (max-width: 900px) {
+  .hero-card {
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .robot-frame {
+    height: 420px;
+  }
+
+  .personality-panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .eye-left {
+    left: 45.8%;
+  }
+
+  .eye-right {
+    left: 52.8%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    padding: 16px;
+  }
+
+  .hero-header h1 {
+    font-size: clamp(2rem, 12vw, 3.6rem);
+  }
+
+  .hero-header p,
+  .personality-panel p,
+  .terminal-body p {
+    font-size: 0.94rem;
+  }
+
+  .robot-frame {
+    height: 360px;
+  }
+
+  .eye {
+    top: 35%;
+    width: 14px;
+    height: 14px;
+  }
+
+  .eye-left {
+    left: 44.2%;
+  }
+
+  .eye-right {
+    left: 53.4%;
+  }
+
+  .zzz {
+    right: 18%;
+  }
+}
